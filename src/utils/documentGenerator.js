@@ -1,5 +1,6 @@
 import { Document, Packer, Paragraph, Table, TableRow, TableCell, HeadingLevel, AlignmentType, WidthType } from 'docx';
 import { saveAs } from 'file-saver';
+import { sectionsTemplate } from '../data/sectionsTemplate';
 
 export const generateWordDocument = async (reportData) => {
   const { title, author, date, selectedSections, formValues } = reportData;
@@ -85,20 +86,43 @@ export const generateWordDocument = async (reportData) => {
                     }),
                   ],
                 }),
-                // Data rows
-                ...((formValues[section] && Object.keys(formValues[section])) || []).map(field => {
-                  const value = formValues[section]?.[field] || 'Not specified';
+                // Data rows - now use sectionsTemplate structure
+                ...sectionsTemplate[section].map(fieldObj => {
+                  const fieldName = fieldObj.name;
+                  const isRequired = fieldObj.required;
+                  const value = formValues[section]?.[fieldName];
+                  
+                  let displayValue;
+                  if (value && value.trim() !== '') {
+                    displayValue = value;
+                  } else if (isRequired) {
+                    displayValue = 'Required - Not Provided';
+                  } else {
+                    displayValue = 'Not specified';
+                  }
+                  
+                  const isMissing = isRequired && (!value || value.trim() === '');
+                  
                   return new TableRow({
                     children: [
                       new TableCell({
-                        children: [new Paragraph({ text: field })],
+                        children: [
+                          new Paragraph({ 
+                            text: `${fieldName}${isRequired ? ' *' : ''}`,
+                            // Make required fields bold if missing
+                            bold: isMissing
+                          })
+                        ],
                         width: { size: 40, type: WidthType.PERCENTAGE },
                       }),
                       new TableCell({
                         children: [
                           new Paragraph({ 
-                            text: value,
-                            spacing: { after: 100 },
+                            text: displayValue,
+                            // Highlight missing required fields
+                            color: isMissing ? 'FF0000' : undefined,
+                            italics: isMissing,
+                            spacing: { after: 100 }
                           })
                         ],
                         width: { size: 60, type: WidthType.PERCENTAGE },
@@ -122,7 +146,7 @@ export const generateWordDocument = async (reportData) => {
             spacing: { before: 800, after: 200 },
           }),
           new Paragraph({
-            text: 'https://github.com/YOUR_USERNAME/reporting-template',
+            text: 'https://github.com/rfb-data-hub/reporting-template',
             alignment: AlignmentType.CENTER,
           }),
         ],

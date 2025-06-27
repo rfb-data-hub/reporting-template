@@ -120,7 +120,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Live Demo**: [View on GitHub Pages](https://YOUR_USERNAME.github.io/reporting-template)
+**Live Demo**: [View on GitHub Pages](https://rfb-data-hub.github.io/reporting-template)
 
-**Repository**: [GitHub](https://github.com/YOUR_USERNAME/reporting-template)
+**Repository**: [GitHub](https://github.com/rfb-data-hub/reporting-template)
 A reporting template for flow battery publications with an GitHub Page online tool for easy compilation of .docx files to attach as supporting information to a publication.

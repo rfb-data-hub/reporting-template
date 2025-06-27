@@ -1,28 +1,70 @@
 import React, { useState } from 'react';
+import { sectionsTemplate } from '../data/sectionsTemplate';
 
 const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGenerating }) => {
   const [reportTitle, setReportTitle] = useState('');
   const [authorName, setAuthorName] = useState('');
   const [studyDate, setStudyDate] = useState(new Date().toISOString().split('T')[0]);
   
-  const totalFields = Array.from(selectedSections).reduce((acc, section) => {
-    return acc + (formValues[section] ? Object.keys(formValues[section]).length : 0);
-  }, 0);
-  
-  const completedFields = Array.from(selectedSections).reduce((acc, section) => {
-    if (!formValues[section]) return acc;
-    return acc + Object.values(formValues[section]).filter(v => v && v.trim()).length;
-  }, 0);
-  
-  const completionPercentage = totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0;
+  // Calculate field statistics including required fields
+  const getFieldStatistics = () => {
+    let totalFields = 0;
+    let completedFields = 0;
+    let totalRequiredFields = 0;
+    let completedRequiredFields = 0;
+    let missingRequiredFields = [];
+
+    Array.from(selectedSections).forEach(section => {
+      const sectionFields = sectionsTemplate[section] || [];
+      
+      sectionFields.forEach(field => {
+        const fieldName = field.name;
+        const isRequired = field.required;
+        const fieldValue = formValues[section]?.[fieldName];
+        const hasValue = fieldValue && fieldValue.trim() !== '';
+        
+        totalFields++;
+        if (hasValue) completedFields++;
+        
+        if (isRequired) {
+          totalRequiredFields++;
+          if (hasValue) {
+            completedRequiredFields++;
+          } else {
+            missingRequiredFields.push({ section, field: fieldName });
+          }
+        }
+      });
+    });
+
+    return {
+      totalFields,
+      completedFields,
+      totalRequiredFields,
+      completedRequiredFields,
+      missingRequiredFields,
+      completionPercentage: totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0,
+      requiredFieldsComplete: totalRequiredFields === completedRequiredFields
+    };
+  };
+
+  const stats = getFieldStatistics();
 
   const handleDownload = () => {
+    if (!stats.requiredFieldsComplete) {
+      const proceed = window.confirm(
+        `Warning: ${stats.missingRequiredFields.length} required field(s) are missing. Do you want to proceed anyway? Missing required fields will be marked as "Required - Not Provided" in the report.`
+      );
+      if (!proceed) return;
+    }
+
     onGenerateReport({
       title: reportTitle || 'Flow Battery Study Report',
       author: authorName || 'Unknown Author',
       date: studyDate,
       selectedSections,
-      formValues
+      formValues,
+      missingRequiredFields: stats.missingRequiredFields
     });
   };
 
@@ -88,7 +130,7 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
           <div className="bg-gray-50 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-900">Report Progress</h3>
-              <span className="text-2xl font-bold text-primary-600">{completionPercentage}%</span>
+              <span className="text-2xl font-bold text-primary-600">{stats.completionPercentage}%</span>
             </div>
             
             <div className="space-y-4">
@@ -98,22 +140,56 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Fields completed:</span>
-                <span className="font-medium">{completedFields} of {totalFields}</span>
+                <span className="font-medium">{stats.completedFields} of {stats.totalFields}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Required fields:</span>
+                <span className={`font-medium ${stats.requiredFieldsComplete ? 'text-green-600' : 'text-red-600'}`}>
+                  {stats.completedRequiredFields} of {stats.totalRequiredFields}
+                  {!stats.requiredFieldsComplete && ' ⚠️'}
+                </span>
               </div>
               
               <div className="w-full bg-gray-200 rounded-full h-3">
                 <div 
                   className="bg-primary-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${completionPercentage}%` }}
+                  style={{ width: `${stats.completionPercentage}%` }}
                 />
               </div>
             </div>
           </div>
 
+          {/* Missing Required Fields Warning */}
+          {!stats.requiredFieldsComplete && (
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <div className="flex items-start">
+                <svg className="w-5 h-5 text-orange-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-orange-800 mb-1">
+                    Missing Required Fields ({stats.missingRequiredFields.length})
+                  </h4>
+                  <p className="text-sm text-orange-700 mb-2">
+                    Some required fields are not filled out. You can still generate the report, but these fields will be marked as "Required - Not Provided".
+                  </p>
+                  <div className="text-xs text-orange-600 space-y-1">
+                    {stats.missingRequiredFields.slice(0, 5).map((item, index) => (
+                      <div key={index}>• {item.section}: {item.field}</div>
+                    ))}
+                    {stats.missingRequiredFields.length > 5 && (
+                      <div>• ... and {stats.missingRequiredFields.length - 5} more</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Download Button */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-500">
-              {completionPercentage < 100 && (
+              {stats.completionPercentage < 100 && (
                 <>Missing fields will be marked as "Not specified" in the report.</>
               )}
             </div>
@@ -122,7 +198,7 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
               disabled={isGenerating}
               className={`btn-primary flex items-center px-8 py-3 text-lg ${
                 isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg transform hover:-translate-y-0.5'
-              } transition-all duration-200`}
+              } ${!stats.requiredFieldsComplete ? 'bg-orange-600 hover:bg-orange-700' : ''} transition-all duration-200`}
             >
               {isGenerating ? (
                 <>

@@ -1,84 +1,84 @@
 export const sectionsTemplate = {
   'A. Molecules & Redox Couples': [
-    'Active species name(s)',
-    'Molecular structure (sketch or SMILES)',
-    'Molecular weight (g mol⁻¹)',
-    'Purity (%)',
-    'Supplier / synthesis route',
-    'Redox reaction (half-cell)',
-    'Standard redox potential (E° vs. SHE)'
+    { name: 'Active species name(s)', required: true },
+    { name: 'Molecular structure (sketch or SMILES)', required: true },
+    { name: 'Molecular weight (g mol⁻¹)', required: true },
+    { name: 'Purity (%)', required: false },
+    { name: 'Supplier / synthesis route', required: false },
+    { name: 'Redox reaction (half-cell)', required: true },
+    { name: 'Standard redox potential (E° vs. SHE)', required: true }
   ],
   'B. Electrolyte Formulation': [
-    'Posolyte active species',
-    'Negolyte active species',
-    'Supporting electrolyte',
-    'Additives',
-    'Total electrolyte volume'
+    { name: 'Posolyte active species', required: true },
+    { name: 'Negolyte active species', required: true },
+    { name: 'Supporting electrolyte', required: true },
+    { name: 'Additives', required: false },
+    { name: 'Total electrolyte volume', required: false }
   ],
   'C. Physicochemical Properties': [
-    'Density (g cm⁻³)',
-    'Viscosity (mPa s)',
-    'Conductivity (S cm⁻¹)',
-    'pH',
-    'UV/Vis λₘₐₓ (nm)',
-    'Nernst potential'
+    { name: 'Density (g cm⁻³)', required: false },
+    { name: 'Viscosity (mPa s)', required: false },
+    { name: 'Conductivity (S cm⁻¹)', required: true },
+    { name: 'pH', required: true },
+    { name: 'UV/Vis λₘₐₓ (nm)', required: false },
+    { name: 'Nernst potential', required: true }
   ],
   'D. Flow-Cell Design & Materials': [
-    'Cell geometry',
-    'Active area (cm²)',
-    'Membrane type/composition',
-    'Electrode material',
-    'Flow frame / distributor',
-    'Current collectors',
-    'Stack compression force'
+    { name: 'Cell geometry', required: true },
+    { name: 'Active area (cm²)', required: true },
+    { name: 'Membrane type/composition', required: true },
+    { name: 'Electrode material', required: true },
+    { name: 'Flow frame / distributor', required: false },
+    { name: 'Current collectors', required: false },
+    { name: 'Stack compression force', required: false }
   ],
   'E. Operating Conditions': [
-    'Temperature (°C)',
-    'Flow rate (mL min⁻¹)',
-    'Current density (mA cm⁻²)',
-    'Voltage cut-offs (V)',
-    'Cycle protocol',
-    'Number of cycles'
+    { name: 'Temperature (°C)', required: true },
+    { name: 'Flow rate (mL min⁻¹)', required: true },
+    { name: 'Current density (mA cm⁻²)', required: true },
+    { name: 'Voltage cut-offs (V)', required: true },
+    { name: 'Cycle protocol', required: false },
+    { name: 'Number of cycles', required: false }
   ],
   'F. Characterization Methods': [
-    'UV/Vis spectroscopy',
-    'Electrochemical impedance spectroscopy',
-    'NMR spectroscopy',
-    'Mass spectrometry',
-    'pH sensor',
-    'Pressure sensors'
+    { name: 'UV/Vis spectroscopy', required: false },
+    { name: 'Electrochemical impedance spectroscopy', required: false },
+    { name: 'NMR spectroscopy', required: false },
+    { name: 'Mass spectrometry', required: false },
+    { name: 'pH sensor', required: false },
+    { name: 'Pressure sensors', required: false }
   ],
   'G. State-of-Charge (SOC) Metrics': [
-    'Coulomb counting',
-    'Spectroscopic (UV/Vis)',
-    'Electrochemical (OCV)'
+    { name: 'Coulomb counting', required: false },
+    { name: 'Spectroscopic (UV/Vis)', required: false },
+    { name: 'Electrochemical (OCV)', required: false }
   ],
   'H. State-of-Health (SOH) Metrics': [
-    'Capacity retention',
-    'Electrolyte composition'
+    { name: 'Capacity retention', required: true },
+    { name: 'Electrolyte composition', required: false }
   ],
   'I. Electrolyte Degradation': [
-    'Side-reactions (e.g. O₂ evolution)',
-    'Crossover / imbalances',
-    'Precipitation'
+    { name: 'Side-reactions (e.g. O₂ evolution)', required: false },
+    { name: 'Crossover / imbalances', required: false },
+    { name: 'Precipitation', required: false }
   ],
   'J. Performance & Efficiencies': [
-    'Coulombic efficiency (%)',
-    'Voltage efficiency (%)',
-    'Energy efficiency (%)',
-    'Round-trip efficiency (%)',
-    'Power density (W cm⁻²)',
-    'Capacity utilization (%)'
+    { name: 'Coulombic efficiency (%)', required: true },
+    { name: 'Voltage efficiency (%)', required: true },
+    { name: 'Energy efficiency (%)', required: true },
+    { name: 'Round-trip efficiency (%)', required: false },
+    { name: 'Power density (W cm⁻²)', required: false },
+    { name: 'Capacity utilization (%)', required: false }
   ],
   'K. Operation & Regeneration Strategies': [
-    'Electrolyte rebalancing',
-    'Electrochemical reconditioning',
-    'BMS-controlled temp. cycling'
+    { name: 'Electrolyte rebalancing', required: false },
+    { name: 'Electrochemical reconditioning', required: false },
+    { name: 'BMS-controlled temp. cycling', required: false }
   ],
   'L. Battery Management System (BMS)': [
-    'SOC tracking',
-    'Temperature control',
-    'Safety cut-offs',
-    'Data logging'
+    { name: 'SOC tracking', required: true },
+    { name: 'Temperature control', required: true },
+    { name: 'Safety cut-offs', required: true },
+    { name: 'Data logging', required: false }
   ]
 };
