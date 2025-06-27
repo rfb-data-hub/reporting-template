@@ -25,8 +25,8 @@ const Header = () => {
             >
               reporting template for flow battery studies
             </a>
-            and is here to lower the hurdles for you to apply the template to your research:{' '}
-            Select relevant sections, fill out the forms, and download a Word document that can be directly attached as supporting information to your manuscript.
+            .{' '}
+            Simply select the relevant sections, fill out the form, and download a Word document that can be directly attached as supporting information to your manuscript.
             Thanks for making your research more transparent and reproducible!
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
