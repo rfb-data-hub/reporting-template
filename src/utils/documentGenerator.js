@@ -10,6 +10,14 @@ export const generateWordDocument = async (reportData) => {
       {
         properties: {},
         children: [
+          // Supporting Information Header
+          new Paragraph({
+            text: 'Supporting Information',
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 600 },
+          }),
+          
           // Title Page
           new Paragraph({
             text: title,
@@ -34,25 +42,107 @@ export const generateWordDocument = async (reportData) => {
             spacing: { after: 800 },
           }),
 
-          // Table of Contents (simplified)
+          // Overview/Table of Contents on separate page
           new Paragraph({
-            text: 'Contents',
+            text: 'Overview',
             heading: HeadingLevel.HEADING_1,
             pageBreakBefore: true,
+            spacing: { after: 400 },
           }),
-          ...Array.from(selectedSections).map((section, index) => 
-            new Paragraph({
-              text: `${index + 1}. ${section}`,
-              spacing: { after: 100 },
-            })
-          ),
+          
+          new Paragraph({
+            text: 'This document contains the following sections:',
+            spacing: { after: 300 },
+          }),
+
+          // Create a proper table for the overview
+          new Table({
+            width: {
+              size: 100,
+              type: WidthType.PERCENTAGE,
+            },
+            rows: [
+              // Header row
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'Section',
+                        heading: HeadingLevel.HEADING_3,
+                      })
+                    ],
+                    width: { size: 10, type: WidthType.PERCENTAGE },
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'Description',
+                        heading: HeadingLevel.HEADING_3,
+                      })
+                    ],
+                    width: { size: 70, type: WidthType.PERCENTAGE },
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'Page',
+                        heading: HeadingLevel.HEADING_3,
+                      })
+                    ],
+                    width: { size: 20, type: WidthType.PERCENTAGE },
+                  }),
+                ],
+              }),
+              // Content rows for each section
+              ...Array.from(selectedSections).map((section, index) => {
+                const pageNumber = index + 3; // Starting from page 3 (after title and overview)
+                // Extract just the letter part (e.g., "A" from "A. Molecules & Redox Couples")
+                const sectionLetter = section.split('.')[0];
+                return new TableRow({
+                  children: [
+                    new TableCell({
+                      children: [
+                        new Paragraph({
+                          text: sectionLetter,
+                        })
+                      ],
+                      width: { size: 10, type: WidthType.PERCENTAGE },
+                    }),
+                    new TableCell({
+                      children: [
+                        new Paragraph({
+                          text: section,
+                        })
+                      ],
+                      width: { size: 70, type: WidthType.PERCENTAGE },
+                    }),
+                    new TableCell({
+                      children: [
+                        new Paragraph({
+                          text: `${pageNumber}`,
+                          alignment: AlignmentType.CENTER,
+                        })
+                      ],
+                      width: { size: 20, type: WidthType.PERCENTAGE },
+                    }),
+                  ],
+                });
+              }),
+            ],
+          }),
+
+          new Paragraph({
+            text: '',
+            spacing: { after: 400 },
+          }),
 
           // Report Sections
           ...Array.from(selectedSections).map((section, sectionIndex) => [
             new Paragraph({
-              text: `${sectionIndex + 1}. ${section}`,
+              text: section, // Just use the section name directly (e.g., "A. Molecules & Redox Couples")
               heading: HeadingLevel.HEADING_1,
-              pageBreakBefore: sectionIndex > 0,
+              pageBreakBefore: true, // Each section starts on a new page
               spacing: { after: 400 },
             }),
 

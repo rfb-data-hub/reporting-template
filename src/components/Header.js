@@ -13,11 +13,21 @@ const Header = () => {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Flow Battery Reporting Template
+            Interactive Reporting Template
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-8">
-            Generate standardized reports for flow battery studies with our interactive template. 
-            Select sections, fill out forms, and download professional Word documents.
+            This interactive template tool is based on the{' '}
+            <a 
+              href="https://github.com/rfb-data-hub/reporting-template" 
+              className="text-white underline decoration-primary-200 hover:decoration-white transition-colors duration-200 font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              reporting template for flow battery studies
+            </a>
+            and is here to lower the hurdles for you to apply the template to your research:{' '}
+            Select relevant sections, fill out the forms, and download a Word document that can be directly attached as supporting information to your manuscript.
+            Thanks for making your research more transparent and reproducible!
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
