@@ -4,196 +4,200 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flow Battery Reporting Template</title>
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React and ReactDOM via CDN -->
-  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-  <!-- docx library for generating Word documents -->
   <script src="https://unpkg.com/docx@7.2.2/build/index.umd.js"></script>
-  <!-- FileSaver.js for saving files in browser -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body class="p-6 bg-gray-50">
-  <div id="root" class="max-w-4xl mx-auto"></div>
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Flow Battery Reporting Template</h1>
+    <div class="mb-6" id="overview">
+      <h2 class="text-xl font-semibold mb-2">1. Overview (Checklist)</h2>
+    </div>
+    <div class="mb-6" id="sections">
+      <h2 class="text-xl font-semibold mb-2">2. Reporting Sections</h2>
+    </div>
+    <button id="download" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Download Word Report</button>
+  </div>
 
-  <script>
-  const { Document, Packer, Paragraph, Table, TableRow, TableCell, TextRun } = window.docx;
-  const { saveAs } = window;
-  const sectionsTemplate = {
-    'A. Molecules & Redox Couples': [
-      'Active species name(s)',
-      'Molecular structure (sketch or SMILES)',
-      'Molecular weight (g mol⁻¹)',
-      'Purity (%)',
-      'Supplier / synthesis route',
-      'Redox reaction (half-cell)',
-      'Standard redox potential (E° vs. SHE)'
-    ],
-    'B. Electrolyte Formulation': [
-      'Posolyte active species',
-      'Negolyte active species',
-      'Supporting electrolyte',
-      'Additives',
-      'Total electrolyte volume'
-    ],
-    'C. Physicochemical Properties': [
-      'Density (g cm⁻³)',
-      'Viscosity (mPa s)',
-      'Conductivity (S cm⁻¹)',
-      'pH',
-      'UV/Vis λₘₐₓ (nm)',
-      'Nernst potential'
-    ],
-    'D. Flow-Cell Design & Materials': [
-      'Cell geometry',
-      'Active area (cm²)',
-      'Membrane type/composition',
-      'Electrode material',
-      'Flow frame / distributor',
-      'Current collectors',
-      'Stack compression force'
-    ],
-    'E. Operating Conditions': [
-      'Temperature (°C)',
-      'Flow rate (mL min⁻¹)',
-      'Current density (mA cm⁻²)',
-      'Voltage cut-offs (V)',
-      'Cycle protocol',
-      'Number of cycles'
-    ],
-    'F. Characterization Methods': [
-      'UV/Vis spectroscopy',
-      'Electrochemical impedance spectroscopy',
-      'NMR spectroscopy',
-      'Mass spectrometry',
-      'pH sensor',
-      'Pressure sensors'
-    ],
-    'G. State-of-Charge (SOC) Metrics': [
-      'Coulomb counting',
-      'Spectroscopic (UV/Vis)',
-      'Electrochemical (OCV)'
-    ],
-    'H. State-of-Health (SOH) Metrics': [
-      'Capacity retention',
-      'Electrolyte composition'
-    ],
-    'I. Electrolyte Degradation': [
-      'Side-reactions (e.g. O₂ evolution)',
-      'Crossover / imbalances',
-      'Precipitation'
-    ],
-    'J. Performance & Efficiencies': [
-      'Coulombic efficiency (%)',
-      'Voltage efficiency (%)',
-      'Energy efficiency (%)',
-      'Round-trip efficiency (%)',
-      'Power density (W cm⁻²)',
-      'Capacity utilization (%)'
-    ],
-    'K. Operation & Regeneration Strategies': [
-      'Electrolyte rebalancing',
-      'Electrochemical reconditioning',
-      'BMS-controlled temp. cycling'
-    ],
-    'L. Battery Management System (BMS)': [
-      'SOC tracking',
-      'Temperature control',
-      'Safety cut-offs',
-      'Data logging'
-    ]
-  };
+<script>
+const { Document, Packer, Paragraph, Table, TableRow, TableCell } = window.docx;
+const { saveAs } = window;
 
-  function App() {
-    const [selected, setSelected] = React.useState({});
-    const [values, setValues] = React.useState({});
+const sectionsTemplate = {
+  'A. Molecules & Redox Couples': [
+    'Active species name(s)',
+    'Molecular structure (sketch or SMILES)',
+    'Molecular weight (g mol⁻¹)',
+    'Purity (%)',
+    'Supplier / synthesis route',
+    'Redox reaction (half-cell)',
+    'Standard redox potential (E° vs. SHE)'
+  ],
+  'B. Electrolyte Formulation': [
+    'Posolyte active species',
+    'Negolyte active species',
+    'Supporting electrolyte',
+    'Additives',
+    'Total electrolyte volume'
+  ],
+  'C. Physicochemical Properties': [
+    'Density (g cm⁻³)',
+    'Viscosity (mPa s)',
+    'Conductivity (S cm⁻¹)',
+    'pH',
+    'UV/Vis λₘₐₓ (nm)',
+    'Nernst potential'
+  ],
+  'D. Flow-Cell Design & Materials': [
+    'Cell geometry',
+    'Active area (cm²)',
+    'Membrane type/composition',
+    'Electrode material',
+    'Flow frame / distributor',
+    'Current collectors',
+    'Stack compression force'
+  ],
+  'E. Operating Conditions': [
+    'Temperature (°C)',
+    'Flow rate (mL min⁻¹)',
+    'Current density (mA cm⁻²)',
+    'Voltage cut-offs (V)',
+    'Cycle protocol',
+    'Number of cycles'
+  ],
+  'F. Characterization Methods': [
+    'UV/Vis spectroscopy',
+    'Electrochemical impedance spectroscopy',
+    'NMR spectroscopy',
+    'Mass spectrometry',
+    'pH sensor',
+    'Pressure sensors'
+  ],
+  'G. State-of-Charge (SOC) Metrics': [
+    'Coulomb counting',
+    'Spectroscopic (UV/Vis)',
+    'Electrochemical (OCV)'
+  ],
+  'H. State-of-Health (SOH) Metrics': [
+    'Capacity retention',
+    'Electrolyte composition'
+  ],
+  'I. Electrolyte Degradation': [
+    'Side-reactions (e.g. O₂ evolution)',
+    'Crossover / imbalances',
+    'Precipitation'
+  ],
+  'J. Performance & Efficiencies': [
+    'Coulombic efficiency (%)',
+    'Voltage efficiency (%)',
+    'Energy efficiency (%)',
+    'Round-trip efficiency (%)',
+    'Power density (W cm⁻²)',
+    'Capacity utilization (%)'
+  ],
+  'K. Operation & Regeneration Strategies': [
+    'Electrolyte rebalancing',
+    'Electrochemical reconditioning',
+    'BMS-controlled temp. cycling'
+  ],
+  'L. Battery Management System (BMS)': [
+    'SOC tracking',
+    'Temperature control',
+    'Safety cut-offs',
+    'Data logging'
+  ]
+};
 
-    const handleSectionToggle = (sec) => {
-      setSelected(prev => ({ ...prev, [sec]: !prev[sec] }));
-    };
+const selected = {};
+const values = {};
 
-    const handleFieldChange = (sec, field, e) => {
-      setValues(prev => ({
-        ...prev,
-        [sec]: { ...prev[sec], [field]: e.target.value }
-      }));
-    };
+function createCheckboxes() {
+  const container = document.getElementById('overview');
+  Object.keys(sectionsTemplate).forEach(sec => {
+    const label = document.createElement('label');
+    label.className = 'flex items-center space-x-2 mb-1 block';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'form-checkbox';
+    checkbox.addEventListener('change', () => toggleSection(sec, checkbox.checked));
+    label.appendChild(checkbox);
+    const span = document.createElement('span');
+    span.textContent = sec;
+    label.appendChild(span);
+    container.appendChild(label);
+  });
+}
 
-    const generateDoc = () => {
-      const doc = new Document();
-      Object.keys(selected).forEach(sec => {
-        if (selected[sec]) {
-          doc.addSection({
-            children: [
-              new Paragraph({ text: sec, heading: "Heading2" }),
-              new Table({
-                rows: [
-                  new TableRow({ children: [
-                    new TableCell({ children: [ new Paragraph("Property") ]}),
-                    new TableCell({ children: [ new Paragraph("Value / Notes") ]})
-                  ]}),
-                  ...sectionsTemplate[sec].map(field => new TableRow({ children: [
-                    new TableCell({ children: [ new Paragraph(field) ]}),
-                    new TableCell({ children: [ new Paragraph(values[sec]?.[field] || "") ]})
-                  ]}))
-                ]
-              })
-            ]
-          });
-        }
+function toggleSection(sec, show) {
+  selected[sec] = show;
+  let secDiv = document.querySelector(`div[data-section="${sec}"]`);
+  if (show) {
+    if (!secDiv) {
+      secDiv = document.createElement('div');
+      secDiv.dataset.section = sec;
+      secDiv.className = 'mb-4 p-4 bg-white rounded shadow';
+      const title = document.createElement('h3');
+      title.className = 'text-lg font-medium mb-2';
+      title.textContent = sec;
+      secDiv.appendChild(title);
+      sectionsTemplate[sec].forEach(field => {
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'mb-2';
+        const label = document.createElement('label');
+        label.className = 'block text-sm font-medium';
+        label.textContent = field;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'mt-1 block w-full border-gray-300 rounded p-2';
+        input.addEventListener('input', e => handleFieldChange(sec, field, e.target.value));
+        fieldDiv.appendChild(label);
+        fieldDiv.appendChild(input);
+        secDiv.appendChild(fieldDiv);
       });
-      Packer.toBlob(doc).then(blob => saveAs(blob, 'flow-battery-report.docx'));
-    };
-
-    return (
-      React.createElement('div', null,
-        React.createElement('h1', { className: 'text-2xl font-bold mb-4' }, 'Flow Battery Reporting Template'),
-        React.createElement('div', { className: 'mb-6' },
-          React.createElement('h2', { className: 'text-xl font-semibold mb-2' }, '1. Overview (Checklist)'),
-          Object.keys(sectionsTemplate).map(sec => (
-            React.createElement('label', { key: sec, className: 'flex items-center space-x-2 mb-1 block' },
-              React.createElement('input', {
-                type: 'checkbox',
-                checked: !!selected[sec],
-                onChange: () => handleSectionToggle(sec),
-                className: 'form-checkbox'
-              }),
-              React.createElement('span', null, sec)
-            )
-          ))
-        ),
-        React.createElement('div', { className: 'mb-6' },
-          React.createElement('h2', { className: 'text-xl font-semibold mb-2' }, '2. Reporting Sections'),
-          Object.keys(sectionsTemplate).filter(sec => selected[sec]).map(sec => (
-            React.createElement('div', { key: sec, className: 'mb-4 p-4 bg-white rounded shadow' },
-              React.createElement('h3', { className: 'text-lg font-medium mb-2' }, sec),
-              sectionsTemplate[sec].map(field => (
-                React.createElement('div', { key: field, className: 'mb-2' },
-                  React.createElement('label', { className: 'block text-sm font-medium' }, field),
-                  React.createElement('input', {
-                    type: 'text',
-                    value: values[sec]?.[field] || '',
-                    onChange: (e) => handleFieldChange(sec, field, e),
-                    className: 'mt-1 block w-full border-gray-300 rounded p-2'
-                  })
-                )
-              ))
-            )
-          ))
-        ),
-        React.createElement('button', {
-          onClick: generateDoc,
-          className: 'mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-        }, 'Download Word Report')
-      )
-    );
+      document.getElementById('sections').appendChild(secDiv);
+    } else {
+      secDiv.style.display = '';
+    }
+  } else if (secDiv) {
+    secDiv.style.display = 'none';
   }
+}
 
-  ReactDOM.render(
-    React.createElement(App),
-    document.getElementById('root')
-  );
-  </script>
+function handleFieldChange(sec, field, value) {
+  if (!values[sec]) values[sec] = {};
+  values[sec][field] = value;
+}
+
+function generateDoc() {
+  const doc = new Document();
+  Object.keys(selected).forEach(sec => {
+    if (selected[sec]) {
+      const rows = [
+        new TableRow({ children: [
+          new TableCell({ children: [new Paragraph('Property')] }),
+          new TableCell({ children: [new Paragraph('Value / Notes')] })
+        ] })
+      ];
+      sectionsTemplate[sec].forEach(field => {
+        rows.push(new TableRow({ children: [
+          new TableCell({ children: [new Paragraph(field)] }),
+          new TableCell({ children: [new Paragraph(values[sec]?.[field] || '')] })
+        ] }));
+      });
+      doc.addSection({
+        children: [
+          new Paragraph({ text: sec, heading: 'Heading2' }),
+          new Table({ rows })
+        ]
+      });
+    }
+  });
+  Packer.toBlob(doc).then(blob => saveAs(blob, 'flow-battery-report.docx'));
+}
+
+document.getElementById('download').addEventListener('click', generateDoc);
+createCheckboxes();
+</script>
 </body>
 </html>
