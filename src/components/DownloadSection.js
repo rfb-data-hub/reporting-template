@@ -6,32 +6,32 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
   const [authorName, setAuthorName] = useState('');
   const [studyDate, setStudyDate] = useState(new Date().toISOString().split('T')[0]);
   
-  // Calculate field statistics including required fields
+  // Calculate field statistics including essential fields
   const getFieldStatistics = () => {
     let totalFields = 0;
     let completedFields = 0;
-    let totalRequiredFields = 0;
-    let completedRequiredFields = 0;
-    let missingRequiredFields = [];
+    let totalEssentialFields = 0;
+    let completedEssentialFields = 0;
+    let missingEssentialFields = [];
 
     Array.from(selectedSections).forEach(section => {
       const sectionFields = sectionsTemplate[section] || [];
       
       sectionFields.forEach(field => {
         const fieldName = field.name;
-        const isRequired = field.required;
+        const isEssential = field.essential;
         const fieldValue = formValues[section]?.[fieldName];
         const hasValue = fieldValue && fieldValue.trim() !== '';
         
         totalFields++;
         if (hasValue) completedFields++;
         
-        if (isRequired) {
-          totalRequiredFields++;
+        if (isEssential) {
+          totalEssentialFields++;
           if (hasValue) {
-            completedRequiredFields++;
+            completedEssentialFields++;
           } else {
-            missingRequiredFields.push({ section, field: fieldName });
+            missingEssentialFields.push({ section, field: fieldName });
           }
         }
       });
@@ -40,20 +40,20 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
     return {
       totalFields,
       completedFields,
-      totalRequiredFields,
-      completedRequiredFields,
-      missingRequiredFields,
+      totalEssentialFields,
+      completedEssentialFields,
+      missingEssentialFields,
       completionPercentage: totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0,
-      requiredFieldsComplete: totalRequiredFields === completedRequiredFields
+      essentialFieldsComplete: totalEssentialFields === completedEssentialFields
     };
   };
 
   const stats = getFieldStatistics();
 
   const handleDownload = () => {
-    if (!stats.requiredFieldsComplete) {
+    if (!stats.essentialFieldsComplete) {
       const proceed = window.confirm(
-        `Warning: ${stats.missingRequiredFields.length} required field(s) are missing. Do you want to proceed anyway? Missing required fields will be marked as "Required - Not Provided" in the report.`
+        `Warning: ${stats.missingEssentialFields.length} essential field(s) are missing. Do you want to proceed anyway? Missing essential fields will be marked as "Essential - Not Provided" in the report.`
       );
       if (!proceed) return;
     }
@@ -64,7 +64,7 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
       date: studyDate,
       selectedSections,
       formValues,
-      missingRequiredFields: stats.missingRequiredFields
+      missingEssentialFields: stats.missingEssentialFields
     });
   };
 
@@ -143,10 +143,10 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
                 <span className="font-medium">{stats.completedFields} of {stats.totalFields}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Required fields:</span>
-                <span className={`font-medium ${stats.requiredFieldsComplete ? 'text-green-600' : 'text-red-600'}`}>
-                  {stats.completedRequiredFields} of {stats.totalRequiredFields}
-                  {!stats.requiredFieldsComplete && ' ⚠️'}
+                <span className="text-gray-600">Essential fields:</span>
+                <span className={`font-medium ${stats.essentialFieldsComplete ? 'text-green-600' : 'text-orange-600'}`}>
+                  {stats.completedEssentialFields} of {stats.totalEssentialFields}
+                  {!stats.essentialFieldsComplete && ' ⚠️'}
                 </span>
               </div>
               
@@ -159,8 +159,8 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
             </div>
           </div>
 
-          {/* Missing Required Fields Warning */}
-          {!stats.requiredFieldsComplete && (
+          {/* Missing Essential Fields Warning */}
+          {!stats.essentialFieldsComplete && (
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
               <div className="flex items-start">
                 <svg className="w-5 h-5 text-orange-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -168,17 +168,17 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
                 </svg>
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-orange-800 mb-1">
-                    Missing Required Fields ({stats.missingRequiredFields.length})
+                    Missing Essential Fields ({stats.missingEssentialFields.length})
                   </h4>
                   <p className="text-sm text-orange-700 mb-2">
-                    Some required fields are not filled out. You can still generate the report, but these fields will be marked as "Required - Not Provided".
+                    Some essential fields are not filled out. You can still generate the report, but these fields will be marked as "Essential - Not Provided".
                   </p>
                   <div className="text-xs text-orange-600 space-y-1">
-                    {stats.missingRequiredFields.slice(0, 5).map((item, index) => (
+                    {stats.missingEssentialFields.slice(0, 5).map((item, index) => (
                       <div key={index}>• {item.section}: {item.field}</div>
                     ))}
-                    {stats.missingRequiredFields.length > 5 && (
-                      <div>• ... and {stats.missingRequiredFields.length - 5} more</div>
+                    {stats.missingEssentialFields.length > 5 && (
+                      <div>• ... and {stats.missingEssentialFields.length - 5} more</div>
                     )}
                   </div>
                 </div>
@@ -198,7 +198,7 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
               disabled={isGenerating}
               className={`btn-primary flex items-center px-8 py-3 text-lg ${
                 isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg transform hover:-translate-y-0.5'
-              } ${!stats.requiredFieldsComplete ? 'bg-orange-600 hover:bg-orange-700' : ''} transition-all duration-200`}
+              } ${!stats.essentialFieldsComplete ? 'bg-orange-600 hover:bg-orange-700' : ''} transition-all duration-200`}
             >
               {isGenerating ? (
                 <>

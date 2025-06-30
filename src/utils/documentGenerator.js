@@ -179,27 +179,27 @@ export const generateWordDocument = async (reportData) => {
                 // Data rows - now use sectionsTemplate structure
                 ...sectionsTemplate[section].map(fieldObj => {
                   const fieldName = fieldObj.name;
-                  const isRequired = fieldObj.required;
+                  const isEssential = fieldObj.essential;
                   const value = formValues[section]?.[fieldName];
                   
                   let displayValue;
                   if (value && value.trim() !== '') {
                     displayValue = value;
-                  } else if (isRequired) {
-                    displayValue = 'Required - Not Provided';
+                  } else if (isEssential) {
+                    displayValue = 'Essential - Not Provided';
                   } else {
                     displayValue = 'Not specified';
                   }
                   
-                  const isMissing = isRequired && (!value || value.trim() === '');
+                  const isMissing = isEssential && (!value || value.trim() === '');
                   
                   return new TableRow({
                     children: [
                       new TableCell({
                         children: [
                           new Paragraph({ 
-                            text: `${fieldName}${isRequired ? ' *' : ''}`,
-                            // Make required fields bold if missing
+                            text: `${fieldName}${isEssential ? ' *' : ''}`,
+                            // Make essential fields bold if missing
                             bold: isMissing
                           })
                         ],
@@ -209,8 +209,8 @@ export const generateWordDocument = async (reportData) => {
                         children: [
                           new Paragraph({ 
                             text: displayValue,
-                            // Highlight missing required fields
-                            color: isMissing ? 'FF0000' : undefined,
+                            // Highlight missing essential fields
+                            color: isMissing ? 'FF6600' : undefined, // Orange color instead of red
                             italics: isMissing,
                             spacing: { after: 100 }
                           })

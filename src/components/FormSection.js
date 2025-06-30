@@ -5,18 +5,18 @@ const FormSection = ({ title, fields, values, onChange }) => {
     onChange(title, fieldName, value);
   };
 
-  const getRequiredFields = () => {
-    return fields.filter(field => field.required).map(field => field.name);
+  const getEssentialFields = () => {
+    return fields.filter(field => field.essential).map(field => field.name);
   };
 
-  const getCompletedRequiredFields = () => {
-    const requiredFields = getRequiredFields();
-    return requiredFields.filter(fieldName => values[fieldName] && values[fieldName].trim() !== '');
+  const getCompletedEssentialFields = () => {
+    const essentialFields = getEssentialFields();
+    return essentialFields.filter(fieldName => values[fieldName] && values[fieldName].trim() !== '');
   };
 
-  const requiredFieldsCount = getRequiredFields().length;
-  const completedRequiredFields = getCompletedRequiredFields().length;
-  const allRequiredFieldsCompleted = requiredFieldsCount === completedRequiredFields;
+  const essentialFieldsCount = getEssentialFields().length;
+  const completedEssentialFields = getCompletedEssentialFields().length;
+  const allEssentialFieldsCompleted = essentialFieldsCount === completedEssentialFields;
 
   return (
     <div className="section-card">
@@ -30,13 +30,13 @@ const FormSection = ({ title, fields, values, onChange }) => {
           <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
         </div>
         
-        {/* Progress indicator for required fields */}
-        {requiredFieldsCount > 0 && (
+        {/* Progress indicator for essential fields */}
+        {essentialFieldsCount > 0 && (
           <div className="flex items-center space-x-2">
             <span className="text-sm text-gray-600">
-              Required: {completedRequiredFields}/{requiredFieldsCount}
+              Essential: {completedEssentialFields}/{essentialFieldsCount}
             </span>
-            <div className={`w-3 h-3 rounded-full ${allRequiredFieldsCompleted ? 'bg-green-500' : 'bg-orange-400'}`} />
+            <div className={`w-3 h-3 rounded-full ${allEssentialFieldsCompleted ? 'bg-green-500' : 'bg-orange-400'}`} />
           </div>
         )}
       </div>
@@ -44,15 +44,15 @@ const FormSection = ({ title, fields, values, onChange }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {fields.map((field) => {
           const fieldName = field.name;
-          const isRequired = field.required;
+          const isEssential = field.essential;
           const hasValue = values[fieldName] && values[fieldName].trim() !== '';
           
           return (
             <div key={fieldName} className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 {fieldName}
-                {isRequired && (
-                  <span className="text-red-500 ml-1" title="Required field">*</span>
+                {isEssential && (
+                  <span className="text-orange-500 ml-1" title="Essential field">*</span>
                 )}
                 {fieldName.includes('(') && (
                   <span className="text-gray-500 text-xs ml-1">
@@ -62,24 +62,22 @@ const FormSection = ({ title, fields, values, onChange }) => {
               </label>
               {fieldName.toLowerCase().includes('structure') || fieldName.toLowerCase().includes('reaction') ? (
                 <textarea
-                  className={`form-textarea h-20 ${isRequired && !hasValue ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-                  placeholder={`Enter ${fieldName.toLowerCase()}...${isRequired ? ' (required)' : ''}`}
+                  className={`form-textarea h-20 ${isEssential && !hasValue ? 'border-orange-300 focus:border-orange-500 focus:ring-orange-500' : ''}`}
+                  placeholder={`Enter ${fieldName.toLowerCase()}...${isEssential ? ' (essential)' : ''}`}
                   value={values[fieldName] || ''}
                   onChange={(e) => handleFieldChange(fieldName, e.target.value)}
-                  required={isRequired}
                 />
               ) : (
                 <input
                   type="text"
-                  className={`form-input ${isRequired && !hasValue ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-                  placeholder={`Enter ${fieldName.toLowerCase()}...${isRequired ? ' (required)' : ''}`}
+                  className={`form-input ${isEssential && !hasValue ? 'border-orange-300 focus:border-orange-500 focus:ring-orange-500' : ''}`}
+                  placeholder={`Enter ${fieldName.toLowerCase()}...${isEssential ? ' (essential)' : ''}`}
                   value={values[fieldName] || ''}
                   onChange={(e) => handleFieldChange(fieldName, e.target.value)}
-                  required={isRequired}
                 />
               )}
-              {isRequired && !hasValue && (
-                <p className="text-sm text-red-600">This field is required</p>
+              {isEssential && !hasValue && (
+                <p className="text-sm text-orange-600">This field is essential for a complete report</p>
               )}
             </div>
           );
