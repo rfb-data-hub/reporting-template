@@ -254,7 +254,7 @@ export const generateWordDocument = async (reportData) => {
           // Report Sections
           ...Array.from(selectedSections).map((section, sectionIndex) => [
             new Paragraph({
-              text: section, // Just use the section name directly (e.g., "A. Molecules & Redox Couples")
+              text: `${section.split('.')[0]}. ${section.substring(section.indexOf('.') + 1).trim()}`, // Keep the full format for document headers
               heading: HeadingLevel.HEADING_1,
               pageBreakBefore: true, // Each section starts on a new page
               spacing: { after: 400 },
