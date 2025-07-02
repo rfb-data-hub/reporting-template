@@ -10,7 +10,7 @@ const SectionSelector = ({ sections, selectedSections, onToggleSection }) => {
         <h2 className="text-2xl font-bold text-gray-900">Template Sections</h2>
       </div>
       <p className="text-gray-600 mb-6">
-        Select the sections you need for your flow battery report. Essential sections are pre-selected but can be deselected if not needed.
+        Select the sections you need for your flow battery report. Essential sections are pre-selected and strongly recommended to be included in the report but can be deselected if not needed.
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

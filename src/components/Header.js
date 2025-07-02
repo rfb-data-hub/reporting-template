@@ -15,26 +15,26 @@ const Header = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Interactive Reporting Template
           </h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-8">
-            This interactive template tool is based on the{' '}
+          <p className="text-xl text-primary-100 max-w-4xl mx-auto mb-8">
+            This interactive reporting template for flow battery studies is based on the{' '}
             <a 
-              href="https://github.com/rfb-data-hub/reporting-template" 
+              href="https://rfb-data-hub.github.io/experimental-guidelines/" 
               className="text-white underline decoration-primary-200 hover:decoration-white transition-colors duration-200 font-medium"
               target="_blank"
               rel="noopener noreferrer"
             >
-              reporting template for flow battery studies
+              community document on experimental guidelines
             </a>
             .{' '}
-            Simply select the relevant sections, fill out the form, and download a Word document that can be directly attached as supporting information to your manuscript.
-            Thanks for making your research more transparent and reproducible!
+            Simply select the relevant sections, fill out the form, and download a Word document which you can publish with your manuscript.
+            <p className="mt-4 font-bold">Thank you for making flow battery research more transparent and reproducible!</p>
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              Interactive Forms
+              Interactive Tool
             </div>
             <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">

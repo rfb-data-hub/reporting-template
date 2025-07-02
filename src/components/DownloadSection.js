@@ -72,8 +72,8 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
   return (
     <div className="card">
       <div className="flex items-center mb-6">
-        <div className="w-8 h-8 bg-secondary-100 rounded-lg flex items-center justify-center mr-3">
-          <span className="text-secondary-600 font-semibold text-sm">3</span>
+        <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+          <span className="text-primary-600 font-semibold text-sm">2</span>
         </div>
         <h2 className="text-2xl font-bold text-gray-900">Download Report</h2>
       </div>
