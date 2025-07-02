@@ -98,12 +98,12 @@ src/
 ### Update GitHub Pages URL
 1. Edit `package.json` and update the `homepage` field:
    ```json
-   "homepage": "https://YOUR_USERNAME.github.io/reporting-template"
+   "homepage": "https://YOUR_USERNAME.github.io/reporting-template/"
    ```
 
 2. Update the footer link in `src/App.js`:
    ```javascript
-   href="https://github.com/YOUR_USERNAME/reporting-template"
+   href="https://github.com/YOUR_USERNAME/reporting-template/"
    ```
 
 ### Customize Template Sections
@@ -149,7 +149,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Live Demo**: [View on GitHub Pages](https://rfb-data-hub.github.io/reporting-template)
+**Live Demo**: [View on GitHub Pages](https://rfb-data-hub.github.io/reporting-template/)
 
 **Repository**: [GitHub](https://github.com/rfb-data-hub/reporting-template)
 A reporting template for flow battery publications with an GitHub Page online tool for easy compilation of .docx files to attach as supporting information to a publication.

@@ -2,7 +2,7 @@
   "name": "flow-battery-reporting-template",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://rfb-data-hub.github.io/reporting-template",
+  "homepage": "https://rfb-data-hub.github.io/reporting-template/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
