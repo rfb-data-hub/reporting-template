@@ -135,9 +135,9 @@ function App() {
               © 2025 Flow Battery Reporting Template. Open source project.
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Documentation</a>
-              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">GitHub</a>
-              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Support</a>
+              <a href="https://github.com/rfb-data-hub/reporting-template#readme" className="text-sm text-gray-500 hover:text-gray-700" target="_blank" rel="noopener noreferrer">Documentation</a>
+              <a href="https://github.com/rfb-data-hub/reporting-template" className="text-sm text-gray-500 hover:text-gray-700" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href="https://github.com/rfb-data-hub/reporting-template/issues" className="text-sm text-gray-500 hover:text-gray-700" target="_blank" rel="noopener noreferrer">Support</a>
             </div>
           </div>
         </div>
