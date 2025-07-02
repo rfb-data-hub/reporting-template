@@ -21,11 +21,7 @@ const SectionSelector = ({ sections, selectedSections, onToggleSection }) => {
           return (
             <label
               key={section}
-              className={`flex items-start space-x-3 p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
-                isEssential
-                  ? 'border-orange-300 hover:border-orange-400 hover:bg-gray-50'
-                  : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50'
-              } group`}
+              className="flex items-start space-x-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 cursor-pointer group"
             >
               <input
                 type="checkbox"
@@ -35,11 +31,7 @@ const SectionSelector = ({ sections, selectedSections, onToggleSection }) => {
               />
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm font-medium transition-colors duration-200 ${
-                    isEssential 
-                      ? 'text-gray-900' 
-                      : 'text-gray-900 group-hover:text-primary-700'
-                  }`}>
+                  <span className="text-sm font-medium text-gray-900 group-hover:text-primary-700 transition-colors duration-200">
                     {section}
                   </span>
                   {isEssential && (
@@ -48,7 +40,7 @@ const SectionSelector = ({ sections, selectedSections, onToggleSection }) => {
                     </span>
                   )}
                 </div>
-                <p className={`text-xs mt-1 ${isEssential ? 'text-gray-600' : 'text-gray-500'}`}>
+                <p className="text-xs mt-1 text-gray-500">
                   {sections[section].fields.length} fields
                 </p>
               </div>
