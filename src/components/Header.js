@@ -26,7 +26,7 @@ const Header = () => {
               community document on experimental guidelines
             </a>
             .{' '}
-            Simply select the relevant sections, fill out the form, and download a Word document which you can publish with your manuscript.
+            Select relevant sections, fill out the form, and download a Word document and metadata file to support your manuscript.
             <p className="mt-4 font-bold">Thank you for making flow battery research more transparent and reproducible!</p>
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
