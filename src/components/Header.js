@@ -15,20 +15,22 @@ const Header = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Interactive Reporting Template
           </h1>
-          <p className="text-xl text-primary-100 max-w-4xl mx-auto mb-8">
-            This interactive reporting template for flow battery studies is based on the{' '}
-            <a 
-              href="https://rfb-data-hub.github.io/experimental-guidelines/" 
-              className="text-white underline decoration-primary-200 hover:decoration-white transition-colors duration-200 font-medium"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              community document on experimental guidelines
-            </a>
-            .{' '}
-            Select relevant sections, fill out the form, and download a Word document and metadata file to support your manuscript.
+          <div className="text-xl text-primary-100 max-w-4xl mx-auto mb-8">
+            <p>
+              This interactive reporting template for flow battery studies is based on the{' '}
+              <a 
+                href="https://rfb-data-hub.github.io/experimental-guidelines/" 
+                className="text-white underline decoration-primary-200 hover:decoration-white transition-colors duration-200 font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                community document on experimental guidelines
+              </a>
+              .{' '}
+              Select relevant sections, fill out the form, and download a Word document and metadata file to support your manuscript.
+            </p>
             <p className="mt-4 font-bold">Thank you for making flow battery research more transparent and reproducible!</p>
-          </p>
+          </div>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -47,6 +49,12 @@ const Header = () => {
                 <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
               Metadata Export
+            </div>
+            <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1 1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+              </svg>
+              Local Auto-Save
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import Header from './components/Header';
 import SectionSelector from './components/SectionSelector';
 import FormSection from './components/FormSection';
 import DownloadSection from './components/DownloadSection';
+import AutoSaveIndicator from './components/AutoSaveIndicator';
 import { sectionsTemplate } from './data/sectionsTemplate';
 import { generateBothReports } from './utils/documentGenerator';
 
@@ -12,18 +13,104 @@ function App() {
     return Object.keys(sectionsTemplate).filter(section => sectionsTemplate[section].essential);
   }, []);
 
-  const [selectedSections, setSelectedSections] = useState(new Set(essentialSections));
-  const [formValues, setFormValues] = useState({});
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  // Initialize form values for pre-selected essential sections
-  useEffect(() => {
+  // Load data from localStorage on initial load
+  const loadFromLocalStorage = useCallback(() => {
+    try {
+      const savedData = localStorage.getItem('flowBatteryReportData');
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        return {
+          selectedSections: new Set(parsed.selectedSections || essentialSections),
+          formValues: parsed.formValues || {},
+          reportTitle: parsed.reportTitle || '',
+          authorName: parsed.authorName || '',
+          studyDate: parsed.studyDate || new Date().toISOString().split('T')[0],
+          lastSaved: parsed.lastSaved || null
+        };
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+    }
+    
+    // If no data in localStorage, initialize empty form values for essential sections
     const initialFormValues = {};
     essentialSections.forEach(section => {
       initialFormValues[section] = {};
     });
-    setFormValues(initialFormValues);
+    
+    return {
+      selectedSections: new Set(essentialSections),
+      formValues: initialFormValues,
+      reportTitle: '',
+      authorName: '',
+      studyDate: new Date().toISOString().split('T')[0],
+      lastSaved: null
+    };
   }, [essentialSections]);
+
+  // Only call loadFromLocalStorage once on mount
+  const [initialData] = useState(() => loadFromLocalStorage());
+  
+  const [selectedSections, setSelectedSections] = useState(initialData.selectedSections);
+  const [formValues, setFormValues] = useState(initialData.formValues);
+  const [reportTitle, setReportTitle] = useState(initialData.reportTitle);
+  const [authorName, setAuthorName] = useState(initialData.authorName);
+  const [studyDate, setStudyDate] = useState(initialData.studyDate);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [lastSaved, setLastSaved] = useState(initialData.lastSaved);
+  const [showRestoreNotification, setShowRestoreNotification] = useState(false);
+
+  // Show restore notification if data was loaded from localStorage
+  useEffect(() => {
+    if (initialData.lastSaved) {
+      setShowRestoreNotification(true);
+      const timer = setTimeout(() => setShowRestoreNotification(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [initialData.lastSaved]);
+
+  // Auto-save to localStorage
+  const saveToLocalStorage = useCallback((sections, values, metadata) => {
+    try {
+      const dataToSave = {
+        selectedSections: Array.from(sections),
+        formValues: values,
+        reportTitle: metadata.reportTitle,
+        authorName: metadata.authorName,
+        studyDate: metadata.studyDate,
+        lastSaved: new Date().toISOString()
+      };
+      localStorage.setItem('flowBatteryReportData', JSON.stringify(dataToSave));
+      setLastSaved(dataToSave.lastSaved);
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }, []);
+
+  // Auto-save whenever selectedSections or formValues change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (selectedSections.size > 0 || Object.keys(formValues).length > 0) {
+        saveToLocalStorage(selectedSections, formValues, { 
+          reportTitle, 
+          authorName, 
+          studyDate 
+        });
+      }
+    }, 300); // Save after 300ms of inactivity
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedSections, formValues, reportTitle, authorName, studyDate, saveToLocalStorage]);
+
+  // Clear localStorage function
+  const clearSavedData = useCallback(() => {
+    try {
+      localStorage.removeItem('flowBatteryReportData');
+      setLastSaved(null);
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
+  }, []);
 
   const handleToggleSection = useCallback((section, isSelected) => {
     setSelectedSections(prev => {
@@ -83,6 +170,33 @@ function App() {
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Restore notification */}
+        {showRestoreNotification && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <svg className="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-blue-800 mb-1">
+                  Data restored from browser storage
+                </h4>
+                <p className="text-sm text-blue-700">
+                  Your previous work has been automatically loaded from local browser storage. You can continue where you left off!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRestoreNotification(false)}
+                className="text-blue-400 hover:text-blue-600"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-8">
           {/* Step 1: Section Selection */}
           <SectionSelector
@@ -112,6 +226,12 @@ function App() {
           <DownloadSection
             selectedSections={selectedSections}
             formValues={formValues}
+            reportTitle={reportTitle}
+            setReportTitle={setReportTitle}
+            authorName={authorName}
+            setAuthorName={setAuthorName}
+            studyDate={studyDate}
+            setStudyDate={setStudyDate}
             onGenerateReport={handleGenerateReport}
             isGenerating={isGenerating}
           />
@@ -133,6 +253,12 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Auto-save indicator */}
+      <AutoSaveIndicator 
+        lastSaved={lastSaved} 
+        onClearData={clearSavedData} 
+      />
     </div>
   );
 }

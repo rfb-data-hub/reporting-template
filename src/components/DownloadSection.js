@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { sectionsTemplate } from '../data/sectionsTemplate';
 
-const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGenerating }) => {
-  const [reportTitle, setReportTitle] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [studyDate, setStudyDate] = useState(new Date().toISOString().split('T')[0]);
-  
+const DownloadSection = ({ 
+  selectedSections, 
+  formValues, 
+  reportTitle,
+  setReportTitle,
+  authorName,
+  setAuthorName,
+  studyDate,
+  setStudyDate,
+  onGenerateReport, 
+  isGenerating 
+}) => {
   // Calculate field statistics including essential fields
   const getFieldStatistics = () => {
     let totalFields = 0;
