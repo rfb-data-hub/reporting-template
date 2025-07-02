@@ -112,11 +112,24 @@ function App() {
   const clearSavedData = useCallback(() => {
     try {
       localStorage.removeItem('flowBatteryReportData');
+      
+      // Reset all states to initial values
+      const initialFormValues = {};
+      essentialSections.forEach(section => {
+        initialFormValues[section] = {};
+      });
+      
+      setSelectedSections(new Set(essentialSections));
+      setFormValues(initialFormValues);
+      setReportTitle('');
+      setAuthorName('');
+      setStudyDate(new Date().toISOString().split('T')[0]);
       setLastSaved(null);
+      
     } catch (error) {
       console.error('Error clearing localStorage:', error);
     }
-  }, []);
+  }, [essentialSections]);
 
   const handleToggleSection = useCallback((section, isSelected) => {
     setSelectedSections(prev => {

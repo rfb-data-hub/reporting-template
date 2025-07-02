@@ -81,53 +81,71 @@ const Header = ({ lastSaved, onClearData, isSaving = false }) => {
           className={`bg-gradient-to-r from-primary-600 to-primary-800 transition-all duration-300 ${
             indicatorFixed ? 'sticky top-0 z-50 shadow-lg' : ''
           }`}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 relative">
-            {/* Header Title - appears when sticky, positioned absolutely on the left */}
-            <div className={`absolute left-4 sm:left-6 lg:left-8 top-1/2 transform -translate-y-1/2 transition-all duration-500 ease-in-out ${
-              indicatorFixed 
-                ? 'opacity-100 translate-x-0' 
-                : 'opacity-0 -translate-x-8'
+        >          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+            indicatorFixed ? 'py-3' : 'py-3'
+          }`}>
+            {/* Sticky content - mit smooth transitions */}
+            <div className={`flex items-center justify-between transition-all duration-500 ease-in-out ${
+              indicatorFixed ? 'opacity-100 h-auto' : 'opacity-0 h-0 overflow-hidden'
             }`}>
-              <h2 className="text-white font-semibold text-lg whitespace-nowrap">
-                Interactive Reporting Template
-              </h2>
-            </div>
-
-            {/* AutoSave Indicator - appears only when sticky, positioned absolutely on the right */}
-            <div className={`absolute right-4 sm:right-6 lg:right-8 top-1/2 transform -translate-y-1/2 inline-flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm transition-all duration-500 ease-in-out ${
-              indicatorFixed ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-            }`}>
-              {isSaving ? (
-                <svg className="w-4 h-4 mr-2 text-white animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 mr-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              )}
-              <div className="text-white text-sm">
-                {isSaving ? 'Saving...' : 'Form Saved'} 
-                <span className="ml-2 text-xs text-white/70">{formatTime(lastSaved)}</span>
+              {/* Header Title - left side */}
+              <div className={`transition-all duration-500 ease-in-out ${
+                indicatorFixed 
+                  ? 'opacity-100 translate-x-0' 
+                  : 'opacity-0 -translate-x-8'
+              }`}>
+                <h2 className="text-white font-semibold text-lg whitespace-nowrap">
+                  Interactive Reporting Template
+                </h2>
               </div>
-              {onClearData && (
-                <button 
-                  onClick={onClearData}
-                  className="ml-3 text-white/60 hover:text-red-400 transition-colors"
-                  title="Clear saved data"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+
+              {/* AutoSave Indicator - right side */}
+              <div className={`inline-flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm transition-all duration-500 ease-in-out ${
+                indicatorFixed ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+              }`}>
+                {isSaving ? (
+                  <svg className="w-4 h-4 mr-2 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                </button>
-              )}
+                ) : (
+                  <svg className="w-4 h-4 mr-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                )}
+                <div className="text-white text-sm">
+                  {isSaving ? 'Saving...' : 'Form Saved'} 
+                  <span className="ml-2 text-xs text-white/70">{formatTime(lastSaved)}</span>
+                </div>
+                {onClearData && (
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (window.confirm('Are you sure you want to clear all saved data? This action cannot be undone.')) {
+                        onClearData();
+                      }
+                    }}
+                    className="ml-3 p-1 text-white/40 hover:text-red-400 hover:bg-red-600/30 rounded transition-colors duration-200"
+                    title="Clear all saved data from browser storage"
+                    type="button"
+                  >
+                    <svg 
+                      className="w-3.5 h-3.5" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Badges - hide when sticky, perfectly centered */}
+            {/* Badges - smooth hide/show transition */}
             <div className={`flex justify-center transition-all duration-500 ease-in-out ${
-              indicatorFixed ? 'opacity-0 translate-y-2 mb-0' : 'opacity-100 translate-y-0 mb-8'
+              indicatorFixed ? 'opacity-0 translate-y-2 h-0 overflow-hidden mb-0' : 'opacity-100 translate-y-0 h-auto mb-8'
             }`}>
               <div className="flex flex-wrap justify-center gap-4 text-sm text-white">
                 <div className="flex items-center bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
