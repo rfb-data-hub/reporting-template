@@ -2,6 +2,120 @@ import { Document, Packer, Paragraph, Table, TableRow, TableCell, HeadingLevel, 
 import { saveAs } from 'file-saver';
 import { sectionsTemplate } from '../data/sectionsTemplate';
 
+export const generateJSONMetadata = (reportData) => {
+  const { title, author, date, selectedSections, formValues } = reportData;
+  
+  const metadata = {
+    report: {
+      title: title,
+      author: author,
+      date: date,
+      generatedAt: new Date().toISOString(),
+      version: "1.0.0",
+      generator: "Flow Battery Reporting Template",
+      url: "https://github.com/rfb-data-hub/reporting-template"
+    },
+    statistics: {
+      totalSections: selectedSections.size,
+      sectionsSelected: Array.from(selectedSections)
+    },
+    sections: {}
+  };
+
+  // Process each selected section
+  Array.from(selectedSections).forEach(section => {
+    const sectionData = sectionsTemplate[section];
+    if (!sectionData || !sectionData.fields) return;
+
+    const sectionMetadata = {
+      name: section,
+      essential: sectionData.essential,
+      fields: {},
+      statistics: {
+        totalFields: sectionData.fields.length,
+        completedFields: 0,
+        essentialFields: 0,
+        completedEssentialFields: 0,
+        missingEssentialFields: []
+      }
+    };
+
+    // Process each field in the section
+    sectionData.fields.forEach(field => {
+      const fieldName = field.name;
+      const isEssential = field.essential;
+      const fieldValue = formValues[section]?.[fieldName];
+      const hasValue = fieldValue && fieldValue.trim() !== '';
+
+      sectionMetadata.fields[fieldName] = {
+        value: hasValue ? fieldValue : null,
+        essential: isEssential,
+        completed: hasValue,
+        status: hasValue ? 'completed' : (isEssential ? 'missing-essential' : 'missing-optional')
+      };
+
+      // Update statistics
+      if (hasValue) {
+        sectionMetadata.statistics.completedFields++;
+      }
+      if (isEssential) {
+        sectionMetadata.statistics.essentialFields++;
+        if (hasValue) {
+          sectionMetadata.statistics.completedEssentialFields++;
+        } else {
+          sectionMetadata.statistics.missingEssentialFields.push(fieldName);
+        }
+      }
+    });
+
+    metadata.sections[section] = sectionMetadata;
+  });
+
+  // Calculate overall statistics
+  const overallStats = Array.from(selectedSections).reduce((acc, section) => {
+    const sectionStats = metadata.sections[section].statistics;
+    return {
+      totalFields: acc.totalFields + sectionStats.totalFields,
+      completedFields: acc.completedFields + sectionStats.completedFields,
+      essentialFields: acc.essentialFields + sectionStats.essentialFields,
+      completedEssentialFields: acc.completedEssentialFields + sectionStats.completedEssentialFields,
+      missingEssentialFields: acc.missingEssentialFields.concat(
+        sectionStats.missingEssentialFields.map(field => ({ section, field }))
+      )
+    };
+  }, {
+    totalFields: 0,
+    completedFields: 0,
+    essentialFields: 0,
+    completedEssentialFields: 0,
+    missingEssentialFields: []
+  });
+
+  metadata.statistics = {
+    ...metadata.statistics,
+    ...overallStats,
+    completionPercentage: overallStats.totalFields > 0 ? 
+      Math.round((overallStats.completedFields / overallStats.totalFields) * 100) : 0,
+    essentialFieldsComplete: overallStats.essentialFields === overallStats.completedEssentialFields
+  };
+
+  return metadata;
+};
+
+export const downloadJSONMetadata = (reportData) => {
+  try {
+    const metadata = generateJSONMetadata(reportData);
+    const jsonString = JSON.stringify(metadata, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const fileName = `${reportData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_metadata_${new Date().toISOString().split('T')[0]}.json`;
+    saveAs(blob, fileName);
+    return true;
+  } catch (error) {
+    console.error('Error generating JSON metadata:', error);
+    throw new Error('Failed to generate JSON metadata');
+  }
+};
+
 export const generateWordDocument = async (reportData) => {
   const { title, author, date, selectedSections, formValues } = reportData;
 
@@ -252,5 +366,20 @@ export const generateWordDocument = async (reportData) => {
   } catch (error) {
     console.error('Error generating document:', error);
     throw new Error('Failed to generate Word document');
+  }
+};
+
+export const generateBothReports = async (reportData) => {
+  try {
+    // Generate both Word document and JSON metadata simultaneously
+    const [wordResult, jsonResult] = await Promise.all([
+      generateWordDocument(reportData),
+      Promise.resolve(downloadJSONMetadata(reportData))
+    ]);
+    
+    return { wordResult, jsonResult };
+  } catch (error) {
+    console.error('Error generating reports:', error);
+    throw new Error('Failed to generate one or both reports');
   }
 };

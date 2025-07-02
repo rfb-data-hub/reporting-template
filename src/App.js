@@ -4,7 +4,7 @@ import SectionSelector from './components/SectionSelector';
 import FormSection from './components/FormSection';
 import DownloadSection from './components/DownloadSection';
 import { sectionsTemplate } from './data/sectionsTemplate';
-import { generateWordDocument } from './utils/documentGenerator';
+import { generateBothReports } from './utils/documentGenerator';
 
 function App() {
   // Move getEssentialSections outside of component or use useMemo
@@ -68,10 +68,10 @@ function App() {
 
     setIsGenerating(true);
     try {
-      await generateWordDocument(reportData);
+      await generateBothReports(reportData);
       // Success notification could be added here
     } catch (error) {
-      alert('Failed to generate the Word document. Please try again.');
+      alert('Failed to generate the reports. Please try again.');
       console.error('Document generation error:', error);
     } finally {
       setIsGenerating(false);

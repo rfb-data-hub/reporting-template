@@ -8,6 +8,7 @@ A modern, interactive web application for generating standardized flow battery s
 - **Dynamic Forms**: Forms appear based on your section selections
 - **Progress Tracking**: Visual progress indicators for form completion
 - **Word Document Export**: Generate professional `.docx` reports
+- **JSON Metadata Export**: Machine-readable metadata files for data sharing
 - **Modern UI**: Clean, responsive design with Tailwind CSS
 - **GitHub Pages Ready**: Easy deployment configuration included
 
@@ -78,7 +79,7 @@ src/
 ├── data/
 │   └── sectionsTemplate.js    # Template definitions and field lists
 ├── utils/
-│   └── documentGenerator.js   # Word document generation logic
+│   └── documentGenerator.js   # Word document and JSON export logic
 ├── App.js                     # Main application component
 ├── index.js                   # React app entry point
 └── index.css                  # Tailwind CSS and custom styles
@@ -113,7 +114,19 @@ Edit `src/data/sectionsTemplate.js` to modify available sections and fields.
 1. **Select Sections**: Check the boxes for the report sections you need
 2. **Fill Forms**: Complete the dynamically generated forms for each selected section
 3. **Add Metadata**: Enter report title, author name, and study date
-4. **Download**: Generate and download your Word document report
+4. **Download**: Generate and download both:
+   - **Word document** (`.docx`) for human-readable reports
+   - **JSON metadata** (`.json`) for machine-readable data sharing
+
+### JSON Metadata Format
+
+The JSON metadata file contains structured information about your study, including:
+- Report metadata (title, author, date, generation info)
+- Section and field completion statistics
+- All form data with completion status
+- Missing essential fields tracking
+
+See `example_metadata.json` for a complete example of the JSON structure.
 
 ## 🤝 Contributing
 

@@ -1,0 +1,148 @@
+{
+  "report": {
+    "title": "Flow Battery Study Report",
+    "author": "Dr. Jane Smith",
+    "date": "2025-07-02",
+    "generatedAt": "2025-07-02T14:30:45.123Z",
+    "version": "1.0.0",
+    "generator": "Flow Battery Reporting Template",
+    "url": "https://github.com/rfb-data-hub/reporting-template"
+  },
+  "statistics": {
+    "totalSections": 3,
+    "sectionsSelected": [
+      "A. Molecules & Redox Couples",
+      "B. Flow Cell",
+      "C. Battery & Stack"
+    ],
+    "totalFields": 12,
+    "completedFields": 8,
+    "essentialFields": 5,
+    "completedEssentialFields": 3,
+    "missingEssentialFields": [
+      {
+        "section": "A. Molecules & Redox Couples",
+        "field": "SMILES notation"
+      },
+      {
+        "section": "B. Flow Cell", 
+        "field": "Active cell area"
+      }
+    ],
+    "completionPercentage": 67,
+    "essentialFieldsComplete": false
+  },
+  "sections": {
+    "A. Molecules & Redox Couples": {
+      "name": "A. Molecules & Redox Couples",
+      "essential": true,
+      "fields": {
+        "Molecule name": {
+          "value": "Viologen derivative",
+          "essential": true,
+          "completed": true,
+          "status": "completed"
+        },
+        "SMILES notation": {
+          "value": null,
+          "essential": true,
+          "completed": false,
+          "status": "missing-essential"
+        },
+        "Molecular weight": {
+          "value": "245.3 g/mol",
+          "essential": false,
+          "completed": true,
+          "status": "completed"
+        },
+        "Solubility": {
+          "value": null,
+          "essential": false,
+          "completed": false,
+          "status": "missing-optional"
+        }
+      },
+      "statistics": {
+        "totalFields": 4,
+        "completedFields": 2,
+        "essentialFields": 2,
+        "completedEssentialFields": 1,
+        "missingEssentialFields": ["SMILES notation"]
+      }
+    },
+    "B. Flow Cell": {
+      "name": "B. Flow Cell",
+      "essential": true,
+      "fields": {
+        "Cell type": {
+          "value": "Single cell",
+          "essential": true,
+          "completed": true,
+          "status": "completed"
+        },
+        "Active cell area": {
+          "value": null,
+          "essential": true,
+          "completed": false,
+          "status": "missing-essential"
+        },
+        "Membrane type": {
+          "value": "Nafion 212",
+          "essential": false,
+          "completed": true,
+          "status": "completed"
+        },
+        "Electrode material": {
+          "value": "Carbon felt",
+          "essential": false,
+          "completed": true,
+          "status": "completed"
+        }
+      },
+      "statistics": {
+        "totalFields": 4,
+        "completedFields": 3,
+        "essentialFields": 2,
+        "completedEssentialFields": 1,
+        "missingEssentialFields": ["Active cell area"]
+      }
+    },
+    "C. Battery & Stack": {
+      "name": "C. Battery & Stack",
+      "essential": false,
+      "fields": {
+        "Number of cells": {
+          "value": "10",
+          "essential": true,
+          "completed": true,
+          "status": "completed"
+        },
+        "Stack configuration": {
+          "value": "Bipolar",
+          "essential": false,
+          "completed": true,
+          "status": "completed"
+        },
+        "Total capacity": {
+          "value": "5 kWh",
+          "essential": false,
+          "completed": true,
+          "status": "completed"
+        },
+        "Efficiency": {
+          "value": null,
+          "essential": false,
+          "completed": false,
+          "status": "missing-optional"
+        }
+      },
+      "statistics": {
+        "totalFields": 4,
+        "completedFields": 3,
+        "essentialFields": 1,
+        "completedEssentialFields": 1,
+        "missingEssentialFields": []
+      }
+    }
+  }
+}
