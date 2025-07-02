@@ -116,14 +116,12 @@ function App() {
           )}
 
           {/* Step 3: Download Section */}
-          {selectedSections.size > 0 && (
-            <DownloadSection
-              selectedSections={selectedSections}
-              formValues={formValues}
-              onGenerateReport={handleGenerateReport}
-              isGenerating={isGenerating}
-            />
-          )}
+          <DownloadSection
+            selectedSections={selectedSections}
+            formValues={formValues}
+            onGenerateReport={handleGenerateReport}
+            isGenerating={isGenerating}
+          />
         </div>
       </main>
       
