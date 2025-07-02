@@ -10,31 +10,51 @@ const SectionSelector = ({ sections, selectedSections, onToggleSection }) => {
         <h2 className="text-2xl font-bold text-gray-900">Template Sections</h2>
       </div>
       <p className="text-gray-600 mb-6">
-        Select the sections you need for your flow battery report. Each selected section will generate a form below.
+        Select the sections you need for your flow battery report. Essential sections are pre-selected but can be deselected if not needed.
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {Object.keys(sections).map((section) => (
-          <label
-            key={section}
-            className="flex items-start space-x-3 p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 cursor-pointer group"
-          >
-            <input
-              type="checkbox"
-              className="form-checkbox mt-1"
-              checked={selectedSections.has(section)}
-              onChange={(e) => onToggleSection(section, e.target.checked)}
-            />
-            <div className="flex-1">
-              <span className="text-sm font-medium text-gray-900 group-hover:text-primary-700 transition-colors duration-200">
-                {section}
-              </span>
-              <p className="text-xs text-gray-500 mt-1">
-                {sections[section].length} fields
-              </p>
-            </div>
-          </label>
-        ))}
+        {Object.keys(sections).map((section) => {
+          const isEssential = sections[section].essential;
+          const isSelected = selectedSections.has(section);
+          
+          return (
+            <label
+              key={section}
+              className={`flex items-start space-x-3 p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
+                isEssential
+                  ? 'border-orange-300 hover:border-orange-400 hover:bg-gray-50'
+                  : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50'
+              } group`}
+            >
+              <input
+                type="checkbox"
+                className="form-checkbox mt-1"
+                checked={isSelected}
+                onChange={(e) => onToggleSection(section, e.target.checked)}
+              />
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-medium transition-colors duration-200 ${
+                    isEssential 
+                      ? 'text-gray-900' 
+                      : 'text-gray-900 group-hover:text-primary-700'
+                  }`}>
+                    {section}
+                  </span>
+                  {isEssential && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-200 text-orange-800">
+                      Essential
+                    </span>
+                  )}
+                </div>
+                <p className={`text-xs mt-1 ${isEssential ? 'text-gray-600' : 'text-gray-500'}`}>
+                  {sections[section].fields.length} fields
+                </p>
+              </div>
+            </label>
+          );
+        })}
       </div>
       
       {selectedSections.size > 0 && (

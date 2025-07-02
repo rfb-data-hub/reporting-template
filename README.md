@@ -37,18 +37,34 @@ A modern, interactive web application for generating standardized flow battery s
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (localhost:3000)
 npm start
 
-# Build for production
-npm run build
+# Alternative: Start with explicit development config
+npm run start:dev
+
+# Build for local testing
+npm run build:dev
 ```
 
 ### GitHub Pages Deployment
 ```bash
-# Deploy to GitHub Pages
+# Build and deploy to GitHub Pages
 npm run deploy
+
+# Or step by step:
+npm run build    # Builds with production config
+npm run deploy   # Deploys to GitHub Pages
 ```
+
+### Environment Configuration
+
+This project uses environment-specific configurations:
+
+- **Development** (`.env.development`): App runs at root path (`/`) for local testing
+- **Production** (`.env.production`): App runs at `/reporting-template` for GitHub Pages
+
+**No manual configuration changes needed!** The build process automatically uses the correct settings.
 
 ## 📁 Project Structure
 

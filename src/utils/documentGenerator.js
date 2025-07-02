@@ -177,7 +177,7 @@ export const generateWordDocument = async (reportData) => {
                   ],
                 }),
                 // Data rows - now use sectionsTemplate structure
-                ...sectionsTemplate[section].map(fieldObj => {
+                ...sectionsTemplate[section].fields.map(fieldObj => {
                   const fieldName = fieldObj.name;
                   const isEssential = fieldObj.essential;
                   const value = formValues[section]?.[fieldName];
@@ -197,7 +197,7 @@ export const generateWordDocument = async (reportData) => {
                     children: [
                       new TableCell({
                         children: [
-                          new Paragraph({ 
+                          new Paragraph({
                             text: `${fieldName}${isEssential ? ' *' : ''}`,
                             // Make essential fields bold if missing
                             bold: isMissing

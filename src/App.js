@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import SectionSelector from './components/SectionSelector';
 import FormSection from './components/FormSection';
@@ -7,9 +7,23 @@ import { sectionsTemplate } from './data/sectionsTemplate';
 import { generateWordDocument } from './utils/documentGenerator';
 
 function App() {
-  const [selectedSections, setSelectedSections] = useState(new Set());
+  // Move getEssentialSections outside of component or use useMemo
+  const essentialSections = useMemo(() => {
+    return Object.keys(sectionsTemplate).filter(section => sectionsTemplate[section].essential);
+  }, []);
+
+  const [selectedSections, setSelectedSections] = useState(new Set(essentialSections));
   const [formValues, setFormValues] = useState({});
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Initialize form values for pre-selected essential sections
+  useEffect(() => {
+    const initialFormValues = {};
+    essentialSections.forEach(section => {
+      initialFormValues[section] = {};
+    });
+    setFormValues(initialFormValues);
+  }, [essentialSections]);
 
   const handleToggleSection = useCallback((section, isSelected) => {
     setSelectedSections(prev => {
@@ -64,74 +78,67 @@ function App() {
     }
   };
 
-  // Convert selectedSections set to array for consistent ordering
-  const selectedSectionsArray = Array.from(selectedSections).sort();
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="space-y-12">
-          {/* Section Selector */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Step 1: Section Selection */}
           <SectionSelector
             sections={sectionsTemplate}
             selectedSections={selectedSections}
             onToggleSection={handleToggleSection}
           />
 
-          {/* Dynamic Form Sections */}
-          {selectedSectionsArray.length > 0 && (
-            <div className="space-y-8">
-              <div className="text-center">
-                <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                  </svg>
+          {/* Step 2: Form Sections */}
+          {selectedSections.size > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-primary-600 font-semibold text-sm">2</span>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Fill Out Your Report</h2>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Complete the forms below for each selected section. You can leave fields empty if not applicable.
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900">Section Details</h2>
               </div>
-
-              {selectedSectionsArray.map((section) => (
-                <FormSection
-                  key={section}
-                  title={section}
-                  fields={sectionsTemplate[section]}
-                  values={formValues[section] || {}}
-                  onChange={handleFieldChange}
-                />
-              ))}
+              
+              {Array.from(selectedSections)
+                .sort((a, b) => a.localeCompare(b))
+                .map((section) => (
+                  <FormSection
+                    key={section}
+                    title={section}
+                    fields={sectionsTemplate[section].fields}
+                    values={formValues[section] || {}}
+                    onChange={handleFieldChange}
+                  />
+                ))}
             </div>
           )}
 
-          {/* Download Section */}
-          <DownloadSection
-            selectedSections={selectedSections}
-            formValues={formValues}
-            onGenerateReport={handleGenerateReport}
-            isGenerating={isGenerating}
-          />
+          {/* Step 3: Download Section */}
+          {selectedSections.size > 0 && (
+            <DownloadSection
+              selectedSections={selectedSections}
+              formValues={formValues}
+              onGenerateReport={handleGenerateReport}
+              isGenerating={isGenerating}
+            />
+          )}
         </div>
       </main>
-
+      
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-20">
+      <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <p className="text-gray-500 text-sm">
-              Built with React and deployed on GitHub Pages. 
-              <a 
-                href="https://github.com/rfb-data-hub/reporting-template" 
-                className="text-primary-600 hover:text-primary-700 ml-1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View source code
-              </a>
-            </p>
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="text-sm text-gray-500 mb-4 md:mb-0">
+              © 2025 Flow Battery Reporting Template. Open source project.
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Documentation</a>
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">GitHub</a>
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Support</a>
+            </div>
           </div>
         </div>
       </footer>

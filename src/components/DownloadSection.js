@@ -15,9 +15,10 @@ const DownloadSection = ({ selectedSections, formValues, onGenerateReport, isGen
     let missingEssentialFields = [];
 
     Array.from(selectedSections).forEach(section => {
-      const sectionFields = sectionsTemplate[section] || [];
+      const sectionData = sectionsTemplate[section];
+      if (!sectionData || !sectionData.fields) return;
       
-      sectionFields.forEach(field => {
+      sectionData.fields.forEach(field => {
         const fieldName = field.name;
         const isEssential = field.essential;
         const fieldValue = formValues[section]?.[fieldName];
