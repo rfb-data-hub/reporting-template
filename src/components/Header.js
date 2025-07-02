@@ -1,22 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const Header = ({ lastSaved, onClearData, isSaving = false }) => {
-  const [scrolled, setScrolled] = useState(false);
   const [indicatorFixed, setIndicatorFixed] = useState(false);
   const headerRef = useRef(null);
   const indicatorRef = useRef(null);
   
   useEffect(() => {
     const handleScroll = () => {
-      const offset = window.scrollY;
-      
-      // Scrolled State für allgemeine Header-Effekte
-      if (offset > 60) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-      
       // Prüfe ob der Indicator-Container sticky werden soll
       if (indicatorRef.current) {
         const containerRect = indicatorRef.current.getBoundingClientRect();
