@@ -3,7 +3,6 @@ import Header from './components/Header';
 import SectionSelector from './components/SectionSelector';
 import FormSection from './components/FormSection';
 import DownloadSection from './components/DownloadSection';
-import AutoSaveIndicator from './components/AutoSaveIndicator';
 import { sectionsTemplate } from './data/sectionsTemplate';
 import { generateBothReports } from './utils/documentGenerator';
 
@@ -57,6 +56,7 @@ function App() {
   const [authorName, setAuthorName] = useState(initialData.authorName);
   const [studyDate, setStudyDate] = useState(initialData.studyDate);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(initialData.lastSaved);
   const [showRestoreNotification, setShowRestoreNotification] = useState(false);
 
@@ -70,7 +70,8 @@ function App() {
   }, [initialData.lastSaved]);
 
   // Auto-save to localStorage
-  const saveToLocalStorage = useCallback((sections, values, metadata) => {
+  const saveToLocalStorage = useCallback(async (sections, values, metadata) => {
+    setIsSaving(true);
     try {
       const dataToSave = {
         selectedSections: Array.from(sections),
@@ -82,8 +83,13 @@ function App() {
       };
       localStorage.setItem('flowBatteryReportData', JSON.stringify(dataToSave));
       setLastSaved(dataToSave.lastSaved);
+      
+      // Simulate a brief delay to show the spinner
+      await new Promise(resolve => setTimeout(resolve, 750));
     } catch (error) {
       console.error('Error saving to localStorage:', error);
+    } finally {
+      setIsSaving(false);
     }
   }, []);
 
@@ -167,7 +173,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header 
+        lastSaved={lastSaved}
+        onClearData={clearSavedData}
+        isSaving={isSaving}
+      />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Restore notification */}
@@ -253,12 +263,6 @@ function App() {
           </div>
         </div>
       </footer>
-
-      {/* Auto-save indicator */}
-      <AutoSaveIndicator 
-        lastSaved={lastSaved} 
-        onClearData={clearSavedData} 
-      />
     </div>
   );
 }
